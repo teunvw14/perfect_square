@@ -17,10 +17,11 @@ def primes_smaller_n_gen(n):
 
 def find_perfect_squares_mod_n(n):
     perfect_squares = set()
-    for i in range(1, n):
+    for i in range(floor(sqrt(n))):
+        perfect_squares.add(i*i)
+    for i in range(floor(sqrt(n)), n):
         square = (i * i) % n
-        if square != 0:
-            perfect_squares.add(square)
+        perfect_squares.add(square)
     return perfect_squares
 
 def get_perfect_square_info(n):
@@ -33,7 +34,7 @@ def get_perfect_square_info(n):
     for p in primes_smaller_n_gen(n):
         perfect_squares[p] = find_perfect_squares_mod_n(p)
         perfect_square_counts[p] = len(perfect_squares[p])
-        if p > 2:
+        if p >= 3:
             perfect_square_counts_diffs[p] = perfect_square_counts[p] - perfect_square_counts[last_prime]
             perfect_square_counts_diffs_normalized[p] = perfect_square_counts_diffs[p] / (p - last_prime)
         last_prime = p
@@ -48,7 +49,7 @@ def plot_perfect_square_counts(perfect_square_counts):
     _fig, ax = plt.subplots()
     x, y = zip(*perfect_square_counts.items())
     ax.scatter(x, y, s=2.0)
-    plt.title("Number of perfect squares in Z(mod p_n).")
+    plt.title("Number of perfect squares in Z(mod p).")
     plt.show()
     
 def plot_perfect_square_count_difference(perfect_square_counts_diff):
@@ -100,8 +101,15 @@ def show_presentation(n):
     plot_perfect_square_count_difference(diffs)
     plot_perfect_square_count_difference_normalized(diffs_norm)
 
+def print_perfect_squares(n):
+    if not isfile(f"data/perfect_squares_{n}.pydict"):
+        pickle_save_perfect_square_info(n)
+    perfect_squares, _, _, _ = pickle_load_perfect_square_info(n)
+    print(perfect_squares)
+
 def main():
-    show_presentation(100)
+    print_perfect_squares(100)
+    show_presentation(1000)
 
 if __name__ == "__main__":
     main()
