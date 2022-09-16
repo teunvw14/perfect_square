@@ -68,14 +68,15 @@ def plot_perfect_square_count_difference_normalized(perfect_square_counts_diffs_
 
 def pickle_save_perfect_square_info(n):
     perfect_squares, counts, diffs, diffs_normalized = get_perfect_square_info(n)
-    with open(f"data/perfect_squares_{n}.pydict", "wb") as f:
-        pickle.dump(perfect_squares, f)
-    with open(f"data/perfect_square_counts_{n}.pydict", "wb") as f:
-        pickle.dump(counts, f)
-    with open(f"data/perfect_square_counts_diffs_{n}.pydict", "wb") as f:
-        pickle.dump(diffs, f)
-    with open(f"data/perfect_square_counts_diffs_normalized_{n}.pydict", "wb") as f:
-        pickle.dump(diffs_normalized, f)
+    item_filename_pairs = (
+        (perfect_squares, f"data/perfect_squares_{n}.pydict"), 
+        (counts, f"data/perfect_square_counts_{n}.pydict"),
+        (diffs, f"data/perfect_square_counts_diffs_{n}.pydict"),
+        (diffs_normalized, f"data/perfect_square_counts_diffs_normalized_{n}.pydict")
+    )
+    for item, filename in item_filename_pairs:
+        with open(filename, "wb") as f:
+            pickle.dump(item, f)
 
 def get_dict_from_file(filename):
     with open(filename, "rb") as f:
